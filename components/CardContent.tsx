@@ -2,71 +2,34 @@
 
 import { useEffect, useState } from "react";
 
-/* type Album = {
-  id: number;
-  title: string;
-  artist: {
-    name: string;
-  };
-  cover_medium: string;
-};
-
-const fetchAlbumData = async () => {
-  const response = await fetch("https://api.deezer.com/album/302127");
-  const data = await response.json();
-  return data as Album;
-};
+interface Album {
+  collectionId: number;
+  collectionName: string;
+  artistName: string;
+  artworkUrl100: string;
+  // Add more properties as needed
+}
 
 export default function Card() {
-  const [album, setAlbum] = useState<Album | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [albums, setAlbums] = useState<Album[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const albumData = await fetchAlbumData();
-        setAlbum(albumData);
-      } catch (error) {
-        console.error("Error fetching album data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (!album) {
-    return <div>Loading...</div>;
-  } */
-
-export default function Card() {
-  const searchTerm: string = "your search term"; // Replace with your desired search term
-
-  interface Album {
-    collectionId: number;
-    collectionName: string;
-    artistName: string;
-    artworkUrl100: string;
-    // Add more properties as needed
-  }
-
-  async function searchAlbums(searchTerm: string): Promise<Album[]> {
-    const encodedSearchTerm: string = encodeURIComponent(searchTerm);
-    const apiUrl: string = `https://itunes.apple.com/search?term=${encodedSearchTerm}&entity=album`;
-
+  const handleSearch = async () => {
     try {
-      const response: Response = await fetch(apiUrl);
-      const data: { results: Album[] } = await response.json();
+      const encodedSearchTerm = encodeURIComponent(searchTerm);
+      const apiUrl = `https://itunes.apple.com/search?term=${encodedSearchTerm}&entity=album`;
 
-      return data.results;
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      setAlbums(data.results);
+      console.log(data.results);
+      console.log(albums);
     } catch (error) {
       console.error("Error searching albums:", error);
-      return [];
+      setAlbums([]);
     }
-  }
-
-  searchAlbums(searchTerm).then((albums: Album[]) => {
-    // Handle the album data here
-    console.log(albums);
-  });
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center border-solid rounded-md">
@@ -76,8 +39,18 @@ export default function Card() {
             Search for an album
           </span>
         </label>
-        <input className="h-8 w-96 p-2 text-black" />
-        <button className="w-16 p-2 rounded-md border-white">Search</button>
+        <input
+          className="h-8 w-96 p-2 text-black"
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button
+          className="w-16 p-2 rounded-md border-white"
+          onClick={handleSearch}
+        >
+          Search
+        </button>
       </div>
       <div className="bg-#0f172a sm:py-16">
         <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
@@ -86,28 +59,33 @@ export default function Card() {
               This is what your search returned
             </h2>
           </div>
-          <ul
-            role="list"
-            className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2"
-          >
-            <li>
-              <div className="flex items-center gap-x-6">
-                {/* <img
-                  className="h-16 w-16 rounded-full"
-                  src={album.cover_medium}
-                  alt="Album Cover"
-                /> */}
-                <div>
-                  <h3 className="text-base font-semibold leading-7 tracking-tight text-white">
-                    Album placeholder
-                  </h3>
-                  <p className="text-sm font-semibold leading-6 text-indigo-600">
-                    Artist:
-                  </p>
-                </div>
-              </div>
-            </li>
-          </ul>
+
+          {albums.map((album) => (
+            <div key={album.collectionId}>
+              <ul
+                role="list"
+                className="grid gap-x-8 gap-y-4 sm:gap-y-4 xl:col-span-2"
+              >
+                <li>
+                  <div className="flex flex-wrap gap-x-6">
+                    <img
+                      className="h-16 w-16 rounded-full"
+                      src={album.artworkUrl100}
+                      alt={album.collectionName}
+                    />
+                    <div>
+                      <h3 className="text-base font-semibold leading-7 tracking-tight text-white">
+                        {album.collectionName}
+                      </h3>
+                      <p className="text-sm font-semibold leading-6 text-indigo-600">
+                        {album.artistName}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
     </main>
