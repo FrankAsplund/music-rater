@@ -1,18 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Album {
   collectionId: number;
   collectionName: string;
   artistName: string;
   artworkUrl100: string;
+  trackCount: string;
+  /* ratingIndex: string; */
+  /* trackName: string[]; */
   // Add more properties as needed
 }
+
+/* interface Tracks {
+  trackName: string[];
+} */
 
 export default function Card() {
   const [searchTerm, setSearchTerm] = useState("");
   const [albums, setAlbums] = useState<Album[]>([]);
+  /* const [tracks, setTracks] = useState<Tracks[]>([]); */
+  /* const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null); */
 
   const handleSearch = async () => {
     try {
@@ -24,12 +33,32 @@ export default function Card() {
 
       setAlbums(data.results);
       console.log(data.results);
-      console.log(albums);
+      /* console.log(data.results.collectionId); */
     } catch (error) {
       console.error("Error searching albums:", error);
       setAlbums([]);
     }
   };
+
+  /* const getTracklist = async () => {
+    try {
+      const encodedSearchTerm = encodeURIComponent(searchTerm);
+      const apiUrlTrack = `https://itunes.apple.com/search?term=${encodedSearchTerm}&entity=song`;
+
+      const response = await fetch(apiUrlTrack);
+      const data = await response.json();
+
+      setAlbums(data.results);
+      console.log(data.results);
+    } catch (error) {
+      console.error("Error searching albums:", error);
+      setAlbums([]);
+    }
+  };
+ */
+  /* const handleAlbumClick = (album: Album) => {
+    setSelectedAlbum(album);
+  }; */
 
   return (
     <main className="flex min-h-screen flex-col items-center border-solid rounded-md">
@@ -52,41 +81,80 @@ export default function Card() {
           Search
         </button>
       </div>
-      <div className="bg-#0f172a sm:py-16">
-        <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
-          <div className="rounded-md border-white">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              This is what your search returned
-            </h2>
-          </div>
-
-          {albums.map((album) => (
-            <div key={album.collectionId}>
-              <ul
-                role="list"
-                className="grid gap-x-8 gap-y-4 sm:gap-y-4 xl:col-span-2"
+      <h2 className="flex justify-center text-3xl mt-4 mb-6 font-bold tracking-tight text-white sm:text-4xl">
+        This is what your search returned
+      </h2>
+      <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:py-16">
+        <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 xl:grid-cols-3">
+          {albums.length > 0 ? (
+            albums.map((album) => (
+              <div
+                key={album.collectionId}
+                /* onClick={() => handleAlbumClick(album)} */
               >
-                <li>
-                  <div className="flex flex-wrap gap-x-6">
-                    <img
-                      className="h-16 w-16 rounded-full"
-                      src={album.artworkUrl100}
-                      alt={album.collectionName}
-                    />
-                    <div>
-                      <h3 className="text-base font-semibold leading-7 tracking-tight text-white">
-                        {album.collectionName}
-                      </h3>
-                      <p className="text-sm font-semibold leading-6 text-indigo-600">
-                        {album.artistName}
-                      </p>
+                <ul
+                  role="list"
+                  className="grid gap-x-8 gap-y-2 sm:gap-y-4 xl:col-span-2"
+                >
+                  <li>
+                    <div className="flex flex-wrap gap-x-6 hover:ring-white-300 rounded-md border-white">
+                      <img
+                        className="h-32 w-32 mb-2 rounded-md"
+                        src={album.artworkUrl100}
+                        alt={album.collectionName}
+                      />
+                      <div>
+                        <h3 className="text-base font-semibold leading-7 tracking-tight text-white">
+                          Album: {album.collectionName}
+                        </h3>
+                        <p className="text-sm font-semibold leading-6 text-white-600">
+                          Artist: {album.artistName}
+                        </p>
+                        <p className="text-sm font-semibold leading-6 text-white-600">
+                          Tracks: {album.trackCount}
+                        </p>
+
+                        <button className="rounded-sm">
+                          Save to collection
+                        </button>
+
+                        {/* <p className="text-sm font-semibold leading-6 text-white-600">
+                          Rating: {album.ratingIndex}
+                        </p> */}
+
+                        {/* <h4>Tracklist:</h4>
+                        <ul>
+                          <li>{album.trackName}</li>
+                        </ul> */}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          ))}
+                  </li>
+                </ul>
+              </div>
+            ))
+          ) : (
+            <p>No albums found.</p>
+          )}
         </div>
+
+        {/* {selectedAlbum && (
+          <div>
+            <h2>{selectedAlbum.collectionName}</h2>
+            <h3>{selectedAlbum.artistName}</h3>
+
+            <img
+              src={selectedAlbum.artworkUrl100}
+              alt={selectedAlbum.collectionName}
+            />
+
+            <h4>Tracklist:</h4>
+            <ul>
+              {selectedAlbum.trackName.map((track, index) => (
+                <li key={index}>{track}</li>
+              ))}
+            </ul>
+          </div>
+        )} */}
       </div>
     </main>
   );

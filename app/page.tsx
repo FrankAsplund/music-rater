@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import Card from "../components/Card";
-/* import { useClient } from "next/data-client"; */
 
 export default function Page() {
   return (

@@ -1,4 +1,3 @@
-// Card.tsx
 import CardContent from "./CardContent";
 
 const Card = () => {
