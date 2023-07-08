@@ -61,7 +61,7 @@ export default function Card() {
   }; */
 
   return (
-    <main className="flex min-h-screen flex-col items-center border-solid rounded-md">
+    <main className="flex min-h-screen flex-col items-center border-solid rounded-md sm:p-2">
       <div className="mt-8">
         <label>
           <span className="mb-2 block text-xl font-medium text-white-700">
@@ -69,7 +69,7 @@ export default function Card() {
           </span>
         </label>
         <input
-          className="h-8 w-96 p-2 text-black"
+          className="h-8 w-64 md:w-96 sm:p-2 text-black"
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -84,8 +84,8 @@ export default function Card() {
       <h2 className="flex justify-center text-3xl mt-4 mb-6 font-bold tracking-tight text-white sm:text-4xl">
         This is what your search returned
       </h2>
-      <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:py-16">
-        <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 xl:grid-cols-3">
+      <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
+        <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
           {albums.length > 0 ? (
             albums.map((album) => (
               <div
