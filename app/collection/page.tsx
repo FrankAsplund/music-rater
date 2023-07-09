@@ -11,20 +11,30 @@ interface Album {
 }
 
 export default function Collection() {
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const [collection, setCollection] = useState<Album[]>([]);
+  /* const [albums, setAlbums] = useState<Album[]>([]); */
+  /* const [collection, setCollection] = useState<Album[]>([]); */
 
+  // Retrieve existing collection from local storage
   const storedCollection = localStorage.getItem("albumCollection");
-  setCollection(storedCollection ? JSON.parse(storedCollection) : []);
+  const collection: Album[] = storedCollection
+    ? JSON.parse(storedCollection)
+    : [];
 
-  const handleGetAlbums = () => {
-    // Retrieve existing collection from local storage
+  /* setAlbums(storedCollection ? JSON.parse(storedCollection) : []); */
 
-    setAlbums(collection);
+  const handleGetAlbums = async () => {
+    /* collection.push(albums); */
 
     console.log(collection);
-    console.log(storedCollection);
-    console.log(albums);
+    /* console.log(albums); */
+  };
+
+  const handleClearLocalStorage = () => {
+    /* localStorage.clear(); */
+
+    console.log(collection);
+
+    // Additional logic or state updates after clearing local storage
   };
 
   return (
@@ -42,46 +52,47 @@ export default function Collection() {
             Display my collection
           </button>
 
-          <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
-            <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
-              {collection.map((album) => (
-                <div key={album.collectionId}>
-                  <ul
-                    role="list"
-                    className="grid gap-x-8 gap-y-2 sm:gap-y-4 xl:col-span-2"
-                  >
-                    <li>
-                      <div className="flex flex-wrap gap-x-6 hover:ring-white-300 rounded-md border-white">
-                        <img
-                          className="h-32 w-32 mb-2 rounded-md"
-                          src={album.artworkUrl100}
-                          alt={album.collectionName}
-                        />
-                        <div>
-                          <h3 className="text-base font-semibold leading-7 tracking-tight text-white">
-                            Album: {album.collectionName}
-                          </h3>
-                          <p className="text-sm font-semibold leading-6 text-white-600">
-                            Artist: {album.artistName}
-                          </p>
-                          <p className="text-sm font-semibold leading-6 text-white-600">
-                            Tracks: {album.trackCount}
-                          </p>
+          <button onClick={() => handleClearLocalStorage()}>
+            Clear storage
+          </button>
 
-                          {/* <button
-                          className="rounded-sm"
-                          onClick={() => handleSaveAlbum(album)}
-                        >
-                          Save to collection
-                        </button> */}
+          {/* <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
+            <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
+              {collection.length > 0 ? (
+                collection.map((album) => (
+                  <div key={album.collectionId}>
+                    <ul
+                      role="list"
+                      className="grid gap-x-8 gap-y-2 sm:gap-y-4 xl:col-span-2"
+                    >
+                      <li>
+                        <div className="flex flex-wrap gap-x-6 hover:ring-white-300 rounded-md border-white">
+                          <img
+                            className="h-32 w-32 mb-2 rounded-md"
+                            src={album.artworkUrl100}
+                            alt={album.collectionName}
+                          />
+                          <div>
+                            <h3 className="text-base font-semibold leading-7 tracking-tight text-white">
+                              Album: {album.collectionName}
+                            </h3>
+                            <p className="text-sm font-semibold leading-6 text-white-600">
+                              Artist: {album.artistName}
+                            </p>
+                            <p className="text-sm font-semibold leading-6 text-white-600">
+                              Tracks: {album.trackCount}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              ))}
+                      </li>
+                    </ul>
+                  </div>
+                ))
+              ) : (
+                <p>No albums in your collection.</p>
+              )}
             </div>
-          </div>
+          </div> */}
         </div>
       </main>
     </div>

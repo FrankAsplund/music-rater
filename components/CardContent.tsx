@@ -54,6 +54,10 @@ export default function Card() {
     console.log(collection);
   };
 
+  /* const displayLocalStorage = () => {
+    console.log(collection);
+  }; */
+
   /* const displayCollection = (album: Album) => {
     collection.forEach((element: string[]) => console.log(element));
   }; */
@@ -98,6 +102,8 @@ export default function Card() {
         >
           Search
         </button>
+
+        {/* <button onClick={() => handleClearLocalStorage()}>Clear storage</button> */}
       </div>
       <h2 className="flex justify-center text-3xl mt-4 mb-6 font-bold tracking-tight text-white sm:text-4xl">
         This is what your search returned
