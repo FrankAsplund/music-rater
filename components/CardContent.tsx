@@ -21,7 +21,7 @@ export default function Card() {
   const [searchTerm, setSearchTerm] = useState("");
   const [albums, setAlbums] = useState<Album[]>([]);
   /* const [tracks, setTracks] = useState<Tracks[]>([]); */
-  /* const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null); */
+  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
 
   const handleSearch = async () => {
     try {
@@ -33,12 +33,30 @@ export default function Card() {
 
       setAlbums(data.results);
       console.log(data.results);
-      /* console.log(data.results.collectionId); */
     } catch (error) {
       console.error("Error searching albums:", error);
       setAlbums([]);
     }
   };
+
+  const handleSaveAlbum = (album: Album) => {
+    setSelectedAlbum(album);
+    // Retrieve existing collection from local storage
+    const existingCollection = localStorage.getItem("albumCollection");
+    const collection = existingCollection ? JSON.parse(existingCollection) : [];
+
+    // Add the selected album to the collection
+    collection.push(selectedAlbum);
+
+    // Update the collection in local storage
+    localStorage.setItem("albumCollection", JSON.stringify(collection));
+
+    console.log(collection);
+  };
+
+  /* const displayCollection = (album: Album) => {
+    collection.forEach((element: string[]) => console.log(element));
+  }; */
 
   /* const getTracklist = async () => {
     try {
@@ -114,7 +132,10 @@ export default function Card() {
                           Tracks: {album.trackCount}
                         </p>
 
-                        <button className="rounded-sm">
+                        <button
+                          className="rounded-sm"
+                          onClick={() => handleSaveAlbum(album)}
+                        >
                           Save to collection
                         </button>
 
