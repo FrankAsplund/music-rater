@@ -30,22 +30,30 @@ export default function Collection() {
 
   return (
     <div>
-      <main className="flex min-h-screen flex-col justify-center items-center lg:p-24 md:p-8 sm:p-2 mx-2 my-6">
+      <main className="flex min-h-screen flex-col justify-center items-center lg:px-24 md:p-8 sm:p-2 mx-2 my-6">
         <div className="mx-auto lg:px-8 max-w-4xl lg:mx-0">
-          <h2 className="text-4xl font-bold tracking-tight  text-white sm:text-6xl">
+          <h2 className="flex text-4xl font-bold tracking-tight justify-center text-white sm:text-6xl">
             My collection
           </h2>
           <p className="flex mt-6 text-lg leading-8 justify-center text-gray-300">
             Here are all the album's you've saved to your collection.
           </p>
 
-          <button onClick={() => displayLocalStorage()}>
-            Display my collection
-          </button>
+          <div className="flex flex-row justify-center items-center border-solid rounded-md sm:p-2">
+            <button
+              onClick={() => displayLocalStorage()}
+              className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
+            >
+              Display my collection
+            </button>
 
-          <button onClick={() => handleClearLocalStorage()}>
-            Clear storage
-          </button>
+            <button
+              onClick={() => handleClearLocalStorage()}
+              className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
+            >
+              Clear storage
+            </button>
+          </div>
 
           <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
             <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
@@ -73,6 +81,10 @@ export default function Collection() {
                             <p className="text-sm font-semibold leading-6 text-white-600">
                               Tracks: {album.trackCount}
                             </p>
+
+                            <button className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]">
+                              Rate album
+                            </button>
                           </div>
                         </div>
                       </li>

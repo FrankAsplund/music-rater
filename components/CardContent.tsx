@@ -104,25 +104,28 @@ export default function Card() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button
-          className="w-16 p-2 rounded-md border-white"
+          type="button"
+          className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
           onClick={handleSearch}
         >
           Search
         </button>
+        <div className="flex flex-row justify-center items-center border-solid rounded-md sm:p-2">
+          <button
+            type="button"
+            className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
+            onClick={() => displayLocalStorage()}
+          >
+            Show collection
+          </button>
 
-        <button
-          className="w-16 p-2 rounded-md border-white"
-          onClick={() => displayLocalStorage()}
-        >
-          Display my collection
-        </button>
-
-        <button
-          className="w-16 p-2 rounded-md border-white"
-          onClick={() => handleClearLocalStorage()}
-        >
-          Clear storage
-        </button>
+          <button
+            className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
+            onClick={() => handleClearLocalStorage()}
+          >
+            Clear collection
+          </button>
+        </div>
       </div>
       <h2 className="flex justify-center text-3xl mt-4 mb-6 font-bold tracking-tight text-white sm:text-4xl">
         This is what your search returned
@@ -155,7 +158,7 @@ export default function Card() {
                         </p>
 
                         <button
-                          className="rounded-sm"
+                          className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]"
                           onClick={() => handleSaveAlbum(album)}
                         >
                           Save to collection
