@@ -11,30 +11,21 @@ interface Album {
 }
 
 export default function Collection() {
-  /* const [albums, setAlbums] = useState<Album[]>([]); */
-  /* const [collection, setCollection] = useState<Album[]>([]); */
-
   // Retrieve existing collection from local storage
   const storedCollection = localStorage.getItem("albumCollection");
   const collection: Album[] = storedCollection
     ? JSON.parse(storedCollection)
     : [];
 
-  /* setAlbums(storedCollection ? JSON.parse(storedCollection) : []); */
+  console.log(collection);
 
-  const handleGetAlbums = async () => {
-    /* collection.push(albums); */
-
-    console.log(collection);
-    /* console.log(albums); */
+  const displayLocalStorage = async () => {
+    console.log("collection: ", collection);
   };
 
   const handleClearLocalStorage = () => {
-    /* localStorage.clear(); */
-
+    localStorage.clear();
     console.log(collection);
-
-    // Additional logic or state updates after clearing local storage
   };
 
   return (
@@ -48,7 +39,7 @@ export default function Collection() {
             Here are all the album's you've saved to your collection.
           </p>
 
-          <button onClick={() => handleGetAlbums()}>
+          <button onClick={() => displayLocalStorage()}>
             Display my collection
           </button>
 
@@ -56,7 +47,7 @@ export default function Collection() {
             Clear storage
           </button>
 
-          {/* <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
+          <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
             <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
               {collection.length > 0 ? (
                 collection.map((album) => (
@@ -92,7 +83,7 @@ export default function Collection() {
                 <p>No albums in your collection.</p>
               )}
             </div>
-          </div> */}
+          </div>
         </div>
       </main>
     </div>

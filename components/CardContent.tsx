@@ -21,7 +21,6 @@ export default function Card() {
   const [searchTerm, setSearchTerm] = useState("");
   const [albums, setAlbums] = useState<Album[]>([]);
   /* const [tracks, setTracks] = useState<Tracks[]>([]); */
-  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
 
   const handleSearch = async () => {
     try {
@@ -40,13 +39,12 @@ export default function Card() {
   };
 
   const handleSaveAlbum = (album: Album) => {
-    setSelectedAlbum(album);
     // Retrieve existing collection from local storage
     const existingCollection = localStorage.getItem("albumCollection");
     const collection = existingCollection ? JSON.parse(existingCollection) : [];
 
     // Add the selected album to the collection
-    collection.push(selectedAlbum);
+    collection.push(album);
 
     // Update the collection in local storage
     localStorage.setItem("albumCollection", JSON.stringify(collection));
@@ -54,13 +52,25 @@ export default function Card() {
     console.log(collection);
   };
 
-  /* const displayLocalStorage = () => {
-    console.log(collection);
-  }; */
+  const displayLocalStorage = () => {
+    const storedCollection = localStorage.getItem("albumCollection");
+    const collection: Album[] = storedCollection
+      ? JSON.parse(storedCollection)
+      : [];
 
-  /* const displayCollection = (album: Album) => {
-    collection.forEach((element: string[]) => console.log(element));
-  }; */
+    console.log(collection);
+  };
+
+  const handleClearLocalStorage = () => {
+    localStorage.clear();
+
+    const storedCollection = localStorage.getItem("albumCollection");
+    const collection: Album[] = storedCollection
+      ? JSON.parse(storedCollection)
+      : [];
+
+    console.log(collection);
+  };
 
   /* const getTracklist = async () => {
     try {
@@ -78,9 +88,6 @@ export default function Card() {
     }
   };
  */
-  /* const handleAlbumClick = (album: Album) => {
-    setSelectedAlbum(album);
-  }; */
 
   return (
     <main className="flex min-h-screen flex-col items-center border-solid rounded-md sm:p-2">
@@ -103,7 +110,19 @@ export default function Card() {
           Search
         </button>
 
-        {/* <button onClick={() => handleClearLocalStorage()}>Clear storage</button> */}
+        <button
+          className="w-16 p-2 rounded-md border-white"
+          onClick={() => displayLocalStorage()}
+        >
+          Display my collection
+        </button>
+
+        <button
+          className="w-16 p-2 rounded-md border-white"
+          onClick={() => handleClearLocalStorage()}
+        >
+          Clear storage
+        </button>
       </div>
       <h2 className="flex justify-center text-3xl mt-4 mb-6 font-bold tracking-tight text-white sm:text-4xl">
         This is what your search returned
@@ -112,10 +131,7 @@ export default function Card() {
         <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
           {albums.length > 0 ? (
             albums.map((album) => (
-              <div
-                key={album.collectionId}
-                /* onClick={() => handleAlbumClick(album)} */
-              >
+              <div key={album.collectionId}>
                 <ul
                   role="list"
                   className="grid gap-x-8 gap-y-2 sm:gap-y-4 xl:col-span-2"
@@ -144,15 +160,6 @@ export default function Card() {
                         >
                           Save to collection
                         </button>
-
-                        {/* <p className="text-sm font-semibold leading-6 text-white-600">
-                          Rating: {album.ratingIndex}
-                        </p> */}
-
-                        {/* <h4>Tracklist:</h4>
-                        <ul>
-                          <li>{album.trackName}</li>
-                        </ul> */}
                       </div>
                     </div>
                   </li>
@@ -163,25 +170,6 @@ export default function Card() {
             <p>No albums found.</p>
           )}
         </div>
-
-        {/* {selectedAlbum && (
-          <div>
-            <h2>{selectedAlbum.collectionName}</h2>
-            <h3>{selectedAlbum.artistName}</h3>
-
-            <img
-              src={selectedAlbum.artworkUrl100}
-              alt={selectedAlbum.collectionName}
-            />
-
-            <h4>Tracklist:</h4>
-            <ul>
-              {selectedAlbum.trackName.map((track, index) => (
-                <li key={index}>{track}</li>
-              ))}
-            </ul>
-          </div>
-        )} */}
       </div>
     </main>
   );
