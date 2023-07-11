@@ -102,22 +102,20 @@ export default function Collection() {
           </div>
 
           <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
-            <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
-              {tracks.length > 0 && (
-                <div className="mt-4">
-                  <h2 className="text-xl font-semibold text-white">
-                    Tracklist for the selected album
-                  </h2>
-                  <ul className="grid gap-2 mt-2">
-                    {tracks.map((track) => (
-                      <li key={track.trackName} className="text-white">
-                        {track.trackName}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+            {tracks.length > 0 && (
+              <div className="mt-4">
+                <h2 className="text-xl font-semibold text-white">
+                  Tracklist for the selected album
+                </h2>
+                <ul className="grid gap-2 mt-2">
+                  {tracks.map((track, i: number) => (
+                    <li key={track.trackName} className="text-white">
+                      {i + 1}. {track.trackName}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </main>
