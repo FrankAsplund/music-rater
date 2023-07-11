@@ -10,22 +10,37 @@ interface Album {
   trackCount: string;
 }
 
+interface Track {
+  trackName: string;
+}
+
 export default function Collection() {
-  // Retrieve existing collection from local storage
+  const [tracks, setTracks] = useState<Track[]>([]);
+
   const storedCollection = localStorage.getItem("albumCollection");
   const collection: Album[] = storedCollection
     ? JSON.parse(storedCollection)
     : [];
 
-  console.log(collection);
+  const handleGetTracklist = async (collectionId: number) => {
+    try {
+      const apiUrl = `https://itunes.apple.com/lookup?id=${collectionId}&entity=song`;
 
-  const displayLocalStorage = async () => {
-    console.log("collection: ", collection);
-  };
+      const response = await fetch(apiUrl);
+      const data = await response.json();
 
-  const handleClearLocalStorage = () => {
-    localStorage.clear();
-    console.log(collection);
+      const fetchedTracks: Track[] = data.results
+        .filter((result: any) => result.wrapperType === "track")
+        .map((result: any) => ({
+          trackName: result.trackName,
+        }));
+
+      setTracks(fetchedTracks);
+      console.log(fetchedTracks);
+    } catch (error) {
+      console.error("Error fetching tracklist:", error);
+      setTracks([]);
+    }
   };
 
   return (
@@ -36,24 +51,8 @@ export default function Collection() {
             My collection
           </h2>
           <p className="flex mt-6 text-lg leading-8 justify-center text-gray-300">
-            Here are all the album's you've saved to your collection.
+            Here are all the albums you've saved to your collection.
           </p>
-
-          <div className="flex flex-row justify-center items-center border-solid rounded-md sm:p-2">
-            <button
-              onClick={() => displayLocalStorage()}
-              className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
-            >
-              Display my collection
-            </button>
-
-            <button
-              onClick={() => handleClearLocalStorage()}
-              className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
-            >
-              Clear storage
-            </button>
-          </div>
 
           <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
             <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
@@ -82,8 +81,13 @@ export default function Collection() {
                               Tracks: {album.trackCount}
                             </p>
 
-                            <button className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]">
-                              Rate album
+                            <button
+                              onClick={() =>
+                                handleGetTracklist(album.collectionId)
+                              }
+                              className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]"
+                            >
+                              Fetch tracklist
                             </button>
                           </div>
                         </div>
@@ -93,6 +97,25 @@ export default function Collection() {
                 ))
               ) : (
                 <p>No albums in your collection.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
+            <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
+              {tracks.length > 0 && (
+                <div className="mt-4">
+                  <h2 className="text-xl font-semibold text-white">
+                    Tracklist for the selected album
+                  </h2>
+                  <ul className="grid gap-2 mt-2">
+                    {tracks.map((track) => (
+                      <li key={track.trackName} className="text-white">
+                        {track.trackName}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
           </div>
