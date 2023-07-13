@@ -72,23 +72,6 @@ export default function Card() {
     console.log(collection);
   };
 
-  /* const getTracklist = async () => {
-    try {
-      const encodedSearchTerm = encodeURIComponent(searchTerm);
-      const apiUrlTrack = `https://itunes.apple.com/search?term=${encodedSearchTerm}&entity=song`;
-
-      const response = await fetch(apiUrlTrack);
-      const data = await response.json();
-
-      setAlbums(data.results);
-      console.log(data.results);
-    } catch (error) {
-      console.error("Error searching albums:", error);
-      setAlbums([]);
-    }
-  };
- */
-
   return (
     <main className="flex min-h-screen flex-col items-center border-solid rounded-md sm:p-2">
       <div className="mt-8">

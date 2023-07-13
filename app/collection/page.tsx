@@ -12,6 +12,7 @@ interface Album {
 
 interface Track {
   trackName: string;
+  rating: number;
 }
 
 export default function Collection() {
@@ -33,15 +34,36 @@ export default function Collection() {
         .filter((result: any) => result.wrapperType === "track")
         .map((result: any) => ({
           trackName: result.trackName,
+          rating: 0, // Initialize the rating to 0
         }));
 
       setTracks(fetchedTracks);
-      console.log(fetchedTracks);
     } catch (error) {
       console.error("Error fetching tracklist:", error);
       setTracks([]);
     }
   };
+
+  const handleRateTrack = (index: number, rating: number) => {
+    setTracks((prevTracks) => {
+      const updatedTracks = [...prevTracks];
+      updatedTracks[index].rating = rating;
+      return updatedTracks;
+    });
+  };
+
+  const calculateAverageScore = () => {
+    if (tracks.length === 0) {
+      return 0;
+    }
+
+    const totalScore = tracks.reduce((sum, track) => sum + track.rating, 0);
+    const averageScore = totalScore / tracks.length;
+
+    return Math.round(averageScore * 10) / 10;
+  };
+
+  const averageScore = calculateAverageScore();
 
   return (
     <div>
@@ -81,6 +103,13 @@ export default function Collection() {
                               Tracks: {album.trackCount}
                             </p>
 
+                            {/* <p className="text-sm font-semibold leading-6 text-white-600">
+                              Your album rating:{" "}
+                              <span className="text-xl leading-8 text-gray-300">
+                                {averageScore}
+                              </span>
+                            </p> */}
+
                             <button
                               onClick={() =>
                                 handleGetTracklist(album.collectionId)
@@ -108,14 +137,35 @@ export default function Collection() {
                   Tracklist for the selected album
                 </h2>
                 <ul className="grid gap-2 mt-2">
-                  {tracks.map((track, i: number) => (
+                  {tracks.map((track, index) => (
                     <li key={track.trackName} className="text-white">
-                      {i + 1}. {track.trackName}
+                      {track.trackName}
+                      <input
+                        className="text-black rounded-md mx-2 sm:px-1"
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={track.rating}
+                        onChange={(e) =>
+                          handleRateTrack(index, parseInt(e.target.value))
+                        }
+                      />
                     </li>
                   ))}
                 </ul>
               </div>
             )}
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold text-white">
+                Average Score for the Album
+              </h2>
+              <p className="flex text-xl leading-8 text-gray-300">
+                {averageScore}
+              </p>
+              <button className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]">
+                Save score
+              </button>
+            </div>
           </div>
         </div>
       </main>
