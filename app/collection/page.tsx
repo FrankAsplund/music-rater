@@ -15,7 +15,7 @@ interface Track {
   rating: number;
 }
 
-export default function Collection() {
+const Collection: React.FC = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
 
   const storedCollection = localStorage.getItem("albumCollection");
@@ -65,6 +65,24 @@ export default function Collection() {
 
   const averageScore = calculateAverageScore();
 
+  // Function to retrieve album scores from localStorage
+  const getSavedAlbumScores = () => {
+    const storedAlbumScores = localStorage.getItem("albumScores");
+    if (storedAlbumScores) {
+      const parsedAlbumScores: Track[] = JSON.parse(storedAlbumScores);
+      setTracks(parsedAlbumScores);
+    }
+  };
+
+  // Effect hook to fetch saved album scores when the component mounts
+  useEffect(() => {
+    getSavedAlbumScores();
+  }, []);
+
+  const saveAlbumScores = () => {
+    localStorage.setItem("albumScores", JSON.stringify(tracks));
+  };
+
   return (
     <div>
       <main className="flex min-h-screen flex-col justify-center items-center lg:px-24 md:p-8 sm:p-2 mx-2 my-6">
@@ -102,13 +120,6 @@ export default function Collection() {
                             <p className="text-sm font-semibold leading-6 text-white-600">
                               Tracks: {album.trackCount}
                             </p>
-
-                            {/* <p className="text-sm font-semibold leading-6 text-white-600">
-                              Your album rating:{" "}
-                              <span className="text-xl leading-8 text-gray-300">
-                                {averageScore}
-                              </span>
-                            </p> */}
 
                             <button
                               onClick={() =>
@@ -157,18 +168,31 @@ export default function Collection() {
             )}
             <div className="mt-6">
               <h2 className="text-xl font-semibold text-white">
-                Average Score for the Album
+                Average score for the Album
               </h2>
               <p className="flex text-xl leading-8 text-gray-300">
                 {averageScore}
               </p>
-              <button className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]">
+              <button
+                className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]"
+                onClick={saveAlbumScores}
+              >
                 Save score
               </button>
+            </div>
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold text-white">
+                Your saved rating of the album
+              </h2>
+              <p className="flex text-xl leading-8 text-gray-300">
+                {/* {averageScore} */}
+              </p>
             </div>
           </div>
         </div>
       </main>
     </div>
   );
-}
+};
+
+export default Collection;

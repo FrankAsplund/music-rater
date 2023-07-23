@@ -8,19 +8,11 @@ interface Album {
   artistName: string;
   artworkUrl100: string;
   trackCount: string;
-  /* ratingIndex: string; */
-  /* trackName: string[]; */
-  // Add more properties as needed
 }
-
-/* interface Tracks {
-  trackName: string[];
-} */
 
 export default function Card() {
   const [searchTerm, setSearchTerm] = useState("");
   const [albums, setAlbums] = useState<Album[]>([]);
-  /* const [tracks, setTracks] = useState<Tracks[]>([]); */
 
   const handleSearch = async () => {
     try {

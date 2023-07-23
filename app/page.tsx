@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Card from "../components/Card";
 
-export default function Page() {
+export default function Home() {
   return (
     <div>
       <main className="flex min-h-screen flex-col justify-center items-center lg:p-24 md:p-8 sm:p-2 mx-2 my-6">
