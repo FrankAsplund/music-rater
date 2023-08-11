@@ -40,8 +40,17 @@ const CollectionContent: React.FC = () => {
       setTracks(fetchedTracks);
     } catch (error) {
       console.error("Error fetching tracklist:", error);
+      alert("This tracklist couldn't be fetched for some reason.");
       setTracks([]);
     }
+  };
+
+  const handleDeleteAlbum = (collectionId: number) => {
+    const updatedCollection = collection.filter(
+      (album) => album.collectionId !== collectionId
+    );
+
+    localStorage.setItem("albumCollection", JSON.stringify(updatedCollection));
   };
 
   const handleRateTrack = (index: number, rating: number) => {
@@ -128,6 +137,15 @@ const CollectionContent: React.FC = () => {
                               className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]"
                             >
                               Fetch tracklist
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                handleDeleteAlbum(album.collectionId)
+                              }
+                              className="my-1 px-2 rounded-md border-white bg-[#de1818]"
+                            >
+                              Delete album
                             </button>
                           </div>
                         </div>
