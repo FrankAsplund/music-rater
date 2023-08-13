@@ -40,12 +40,23 @@ const CollectionContent: React.FC = () => {
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      const fetchedTracks: Track[] = data.results
-        .filter((result: any) => result.wrapperType === "track")
-        .map((result: any) => ({
-          trackName: result.trackName,
-          rating: 0, // Initialize the rating to 0
-        }));
+      let fetchedTracks: Track[] = [];
+      const uniqueTrackNames = new Set(); // To store unique track names
+
+      if (data.results) {
+        fetchedTracks = data.results
+          .filter((result: any) => result.wrapperType === "track")
+          .reduce((uniqueTracks: Track[], result: any) => {
+            if (!uniqueTrackNames.has(result.trackName)) {
+              uniqueTrackNames.add(result.trackName);
+              uniqueTracks.push({
+                trackName: result.trackName,
+                rating: 0, // Initialize the rating to 0
+              });
+            }
+            return uniqueTracks;
+          }, []);
+      }
 
       setTracks(fetchedTracks);
     } catch (error) {
