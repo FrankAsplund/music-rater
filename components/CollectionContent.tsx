@@ -16,12 +16,22 @@ interface Track {
 }
 
 const CollectionContent: React.FC = () => {
-  const [tracks, setTracks] = useState<Track[]>([]);
+  /* if (typeof window !== "undefined") {    
+  } */
 
-  const storedCollection = localStorage.getItem("albumCollection");
-  const collection: Album[] = storedCollection
-    ? JSON.parse(storedCollection)
-    : [];
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [albumCollection, setAlbumCollection] = useState<Album[]>([]);
+
+  // Effect hook to fetch saved album scores when the component mounts
+  useEffect(() => {
+    const storedCollection = localStorage.getItem("albumCollection");
+    const collection: Album[] = storedCollection
+      ? JSON.parse(storedCollection)
+      : [];
+
+    setAlbumCollection(collection);
+    getSavedAlbumScores();
+  }, []);
 
   const handleGetTracklist = async (collectionId: number) => {
     try {
@@ -46,7 +56,7 @@ const CollectionContent: React.FC = () => {
   };
 
   const handleDeleteAlbum = (collectionId: number) => {
-    const updatedCollection = collection.filter(
+    const updatedCollection = albumCollection.filter(
       (album) => album.collectionId !== collectionId
     );
 
@@ -83,11 +93,6 @@ const CollectionContent: React.FC = () => {
     }
   };
 
-  // Effect hook to fetch saved album scores when the component mounts
-  useEffect(() => {
-    getSavedAlbumScores();
-  }, []);
-
   const saveAlbumScores = () => {
     localStorage.setItem("albumScores", JSON.stringify(tracks));
   };
@@ -105,8 +110,8 @@ const CollectionContent: React.FC = () => {
 
           <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
             <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
-              {collection.length > 0 ? (
-                collection.map((album) => (
+              {albumCollection.length > 0 ? (
+                albumCollection.map((album) => (
                   <div key={album.collectionId}>
                     <ul
                       role="list"
