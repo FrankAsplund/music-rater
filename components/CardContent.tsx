@@ -42,6 +42,7 @@ export default function Card() {
     localStorage.setItem("albumCollection", JSON.stringify(collection));
 
     console.log(collection);
+    alert("This album has been added to your collection.");
   };
 
   const displayLocalStorage = () => {
@@ -54,7 +55,13 @@ export default function Card() {
   };
 
   const handleClearLocalStorage = () => {
-    localStorage.clear();
+    if (
+      confirm(
+        "Are you sure you want to delete your collection? You cannot revert this action."
+      )
+    ) {
+      localStorage.clear();
+    }
 
     const storedCollection = localStorage.getItem("albumCollection");
     const collection: Album[] = storedCollection

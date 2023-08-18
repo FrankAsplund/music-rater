@@ -16,21 +16,23 @@ interface Track {
 }
 
 const CollectionContent: React.FC = () => {
-  /* if (typeof window !== "undefined") {    
-  } */
-
   const [tracks, setTracks] = useState<Track[]>([]);
   const [albumCollection, setAlbumCollection] = useState<Album[]>([]);
+  const [savedScores, setSavedScores] = useState<Album[]>([]);
+  const [savedTracklist, setSavedTracklist] = useState<Track[]>([]);
 
   // Effect hook to fetch saved album scores when the component mounts
-  useEffect(() => {
+  const getAlbumCollection = () => {
     const storedCollection = localStorage.getItem("albumCollection");
     const collection: Album[] = storedCollection
       ? JSON.parse(storedCollection)
       : [];
 
     setAlbumCollection(collection);
-    getSavedAlbumScores();
+  };
+
+  useEffect(() => {
+    getAlbumCollection();
   }, []);
 
   const handleGetTracklist = async (collectionId: number) => {
@@ -67,11 +69,22 @@ const CollectionContent: React.FC = () => {
   };
 
   const handleDeleteAlbum = (collectionId: number) => {
-    const updatedCollection = albumCollection.filter(
-      (album) => album.collectionId !== collectionId
-    );
+    if (
+      confirm(
+        "Are you sure you want to delete this album from your collection? You cannot revert this action."
+      )
+    ) {
+      const updatedCollection = albumCollection.filter(
+        (album) => album.collectionId !== collectionId
+      );
 
-    localStorage.setItem("albumCollection", JSON.stringify(updatedCollection));
+      localStorage.setItem(
+        "albumCollection",
+        JSON.stringify(updatedCollection)
+      );
+
+      getAlbumCollection();
+    }
   };
 
   const handleRateTrack = (index: number, rating: number) => {
@@ -100,12 +113,30 @@ const CollectionContent: React.FC = () => {
     const storedAlbumScores = localStorage.getItem("albumScores");
     if (storedAlbumScores) {
       const parsedAlbumScores: Track[] = JSON.parse(storedAlbumScores);
-      setTracks(parsedAlbumScores);
+      setSavedTracklist(parsedAlbumScores);
     }
   };
 
   const saveAlbumScores = () => {
     localStorage.setItem("albumScores", JSON.stringify(tracks));
+    alert("Your score has been saved.");
+  };
+
+  const handleClearLocalStorage = () => {
+    if (
+      confirm(
+        "Are you sure you want to delete your collection? You cannot revert this action."
+      )
+    ) {
+      localStorage.clear();
+    }
+
+    const storedCollection = localStorage.getItem("albumCollection");
+    const collection: Album[] = storedCollection
+      ? JSON.parse(storedCollection)
+      : [];
+
+    console.log(collection);
   };
 
   return (
@@ -118,6 +149,22 @@ const CollectionContent: React.FC = () => {
           <p className="flex mt-6 text-lg leading-8 justify-center text-gray-300">
             Here are all the albums you've saved to your collection.
           </p>
+
+          <div className="flex flex-row justify-center items-center border-solid rounded-md sm:p-2">
+            <button
+              type="button"
+              className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
+            >
+              Example text
+            </button>
+
+            <button
+              className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
+              onClick={() => handleClearLocalStorage()}
+            >
+              Clear collection
+            </button>
+          </div>
 
           <div className="bg-[#0f172a] rounded-md mt-4 border-white sm:p-8 sm:mx-8 py-8">
             <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:grid-cols-3">
@@ -213,14 +260,6 @@ const CollectionContent: React.FC = () => {
               >
                 Save score
               </button>
-            </div>
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold text-white">
-                Your saved rating of the album
-              </h2>
-              <p className="flex text-xl leading-8 text-gray-300">
-                {/* {averageScore} */}
-              </p>
             </div>
           </div>
         </div>
