@@ -15,11 +15,14 @@ interface Track {
   rating: number;
 }
 
+interface TrackRatings {
+  [trackName: string]: number;
+}
+
 const CollectionContent: React.FC = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [albumCollection, setAlbumCollection] = useState<Album[]>([]);
-  const [savedScores, setSavedScores] = useState<Album[]>([]);
-  const [savedTracklist, setSavedTracklist] = useState<Track[]>([]);
+  const [trackRatings, setTrackRatings] = useState<TrackRatings>({});
 
   // Effect hook to fetch saved album scores when the component mounts
   const getAlbumCollection = () => {
@@ -61,6 +64,11 @@ const CollectionContent: React.FC = () => {
       }
 
       setTracks(fetchedTracks);
+
+      const storedRatings = JSON.parse(
+        localStorage.getItem("trackRatings") || "{}"
+      );
+      setTrackRatings(storedRatings);
     } catch (error) {
       console.error("Error fetching tracklist:", error);
       alert("This tracklist couldn't be fetched for some reason.");
@@ -87,12 +95,14 @@ const CollectionContent: React.FC = () => {
     }
   };
 
-  const handleRateTrack = (index: number, rating: number) => {
-    setTracks((prevTracks) => {
-      const updatedTracks = [...prevTracks];
-      updatedTracks[index].rating = rating;
-      return updatedTracks;
-    });
+  const handleRateTrack = (trackName: string, rating: number) => {
+    setTrackRatings((prevRatings) => ({
+      ...prevRatings,
+      [trackName]: rating,
+    }));
+
+    // Save the updated ratings to localStorage
+    localStorage.setItem("trackRatings", JSON.stringify(trackRatings));
   };
 
   const calculateAverageScore = () => {
@@ -100,27 +110,16 @@ const CollectionContent: React.FC = () => {
       return 0;
     }
 
-    const totalScore = tracks.reduce((sum, track) => sum + track.rating, 0);
+    const totalScore = tracks.reduce(
+      (sum, track) => sum + (trackRatings[track.trackName] || 0),
+      0
+    );
     const averageScore = totalScore / tracks.length;
 
     return Math.round(averageScore * 10) / 10;
   };
 
   const averageScore = calculateAverageScore();
-
-  // Function to retrieve album scores from localStorage
-  const getSavedAlbumScores = () => {
-    const storedAlbumScores = localStorage.getItem("albumScores");
-    if (storedAlbumScores) {
-      const parsedAlbumScores: Track[] = JSON.parse(storedAlbumScores);
-      setSavedTracklist(parsedAlbumScores);
-    }
-  };
-
-  const saveAlbumScores = () => {
-    localStorage.setItem("albumScores", JSON.stringify(tracks));
-    alert("Your score has been saved.");
-  };
 
   const handleClearLocalStorage = () => {
     if (
@@ -151,13 +150,6 @@ const CollectionContent: React.FC = () => {
           </p>
 
           <div className="flex flex-row justify-center items-center border-solid rounded-md sm:p-2">
-            <button
-              type="button"
-              className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
-            >
-              Example text
-            </button>
-
             <button
               className="m-2 p-2 rounded-md border-white bg-[#1f2f6b]"
               onClick={() => handleClearLocalStorage()}
@@ -229,7 +221,7 @@ const CollectionContent: React.FC = () => {
                   Tracklist for the selected album
                 </h2>
                 <ul className="grid gap-2 mt-2">
-                  {tracks.map((track, index) => (
+                  {tracks.map((track) => (
                     <li key={track.trackName} className="text-white">
                       {track.trackName}
                       <input
@@ -237,9 +229,12 @@ const CollectionContent: React.FC = () => {
                         type="number"
                         min={1}
                         max={10}
-                        value={track.rating}
+                        value={trackRatings[track.trackName] || 0} // Use the saved rating or default to 0
                         onChange={(e) =>
-                          handleRateTrack(index, parseInt(e.target.value))
+                          handleRateTrack(
+                            track.trackName,
+                            parseInt(e.target.value)
+                          )
                         }
                       />
                     </li>
@@ -254,12 +249,6 @@ const CollectionContent: React.FC = () => {
               <p className="flex text-xl leading-8 text-gray-300">
                 {averageScore}
               </p>
-              <button
-                className="my-1 px-2 rounded-md border-white bg-[#1f2f6b]"
-                onClick={saveAlbumScores}
-              >
-                Save score
-              </button>
             </div>
           </div>
         </div>
