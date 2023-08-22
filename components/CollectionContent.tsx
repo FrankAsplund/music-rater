@@ -8,6 +8,7 @@ interface Album {
   artistName: string;
   artworkUrl100: string;
   trackCount: string;
+  userRating: number;
 }
 
 interface Track {
@@ -24,14 +25,15 @@ const CollectionContent: React.FC = () => {
   const [albumCollection, setAlbumCollection] = useState<Album[]>([]);
   const [trackRatings, setTrackRatings] = useState<TrackRatings>({});
 
-  // Effect hook to fetch saved album scores when the component mounts
   const getAlbumCollection = () => {
-    const storedCollection = localStorage.getItem("albumCollection");
-    const collection: Album[] = storedCollection
-      ? JSON.parse(storedCollection)
-      : [];
+    if (localStorage != undefined) {
+      const storedCollection = localStorage.getItem("albumCollection");
+      const collection: Album[] = storedCollection
+        ? JSON.parse(storedCollection)
+        : [];
 
-    setAlbumCollection(collection);
+      setAlbumCollection(collection);
+    }
   };
 
   useEffect(() => {
@@ -46,7 +48,7 @@ const CollectionContent: React.FC = () => {
       const data = await response.json();
 
       let fetchedTracks: Track[] = [];
-      const uniqueTrackNames = new Set(); // To store unique track names
+      const uniqueTrackNames = new Set();
 
       if (data.results) {
         fetchedTracks = data.results
@@ -56,7 +58,7 @@ const CollectionContent: React.FC = () => {
               uniqueTrackNames.add(result.trackName);
               uniqueTracks.push({
                 trackName: result.trackName,
-                rating: 0, // Initialize the rating to 0
+                rating: 0,
               });
             }
             return uniqueTracks;
@@ -101,7 +103,6 @@ const CollectionContent: React.FC = () => {
       [trackName]: rating,
     }));
 
-    // Save the updated ratings to localStorage
     localStorage.setItem("trackRatings", JSON.stringify(trackRatings));
   };
 
@@ -184,6 +185,9 @@ const CollectionContent: React.FC = () => {
                             <p className="text-sm font-semibold leading-6 text-white-600">
                               Tracks: {album.trackCount}
                             </p>
+                            <p className="text-sm font-semibold leading-6 text-white-600">
+                              Your rating: {album.userRating}
+                            </p>
 
                             <button
                               onClick={() =>
@@ -229,7 +233,7 @@ const CollectionContent: React.FC = () => {
                         type="number"
                         min={1}
                         max={10}
-                        value={trackRatings[track.trackName] || 0} // Use the saved rating or default to 0
+                        value={trackRatings[track.trackName] || 0}
                         onChange={(e) =>
                           handleRateTrack(
                             track.trackName,
